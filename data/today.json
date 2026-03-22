@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-03-22T17:13:43.590Z",
+  "ad": {
+    "year": 2026,
+    "month": 3,
+    "day": 22,
+    "weekday_en": "Sunday"
+  },
+  "bs": {
+    "year": 2083,
+    "month": 12,
+    "day": 10,
+    "month_name_en": "Chaitra",
+    "month_name_ne": "चैत्र",
+    "weekday_en": "Sunday",
+    "weekday_ne": "आइतबार",
+    "full_date_en": "10 Chaitra 2083 BS",
+    "full_date_ne": "10 चैत्र 2083"
+  }
+}

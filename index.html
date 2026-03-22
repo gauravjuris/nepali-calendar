@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>नेपाली पात्रो | Nepali Calendar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --crimson:    #C0392B;
+      --crimson-dk: #922b21;
+      --crimson-lt: #e74c3c;
+      --gold:       #D4A017;
+      --gold-lt:    #f0c040;
+      --bg:         #0d0a0b;
+      --bg2:        #150f10;
+      --bg3:        #1e1516;
+      --surface:    #261a1b;
+      --border:     rgba(192,57,43,0.25);
+      --text:       #f0e8e0;
+      --text-dim:   #9e8880;
+      --sunday:     #e74c3c;
+      --saturday:   #e67e22;
+      --today-bg:   #C0392B;
+      --today-txt:  #fff;
+      --holiday:    #f39c12;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans Devanagari', 'Crimson Pro', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(192,57,43,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 90%, rgba(212,160,23,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper { position: relative; z-index: 1; width: 100%; max-width: 820px; }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.6rem;
+    }
+    .flag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--crimson); }
+    .header h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      background: linear-gradient(135deg, #f0e8e0 0%, var(--gold-lt) 60%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header h1 span {
+      display: block;
+      font-size: 0.38em;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      -webkit-text-fill-color: var(--text-dim);
+      color: var(--text-dim);
+      margin-top: 0.3em;
+      font-family: 'Crimson Pro', serif;
+      font-style: italic;
+    }
+
+    /* ── TODAY BANNER ── */
+    .today-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-bottom: 2rem;
+    }
+    .today-bs {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold-lt);
+    }
+    .today-ad {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      font-family: 'Crimson Pro', serif;
+    }
+    .today-day {
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--crimson-lt);
+      font-weight: 600;
+    }
+    .today-holiday {
+      font-size: 0.82rem;
+      color: var(--holiday);
+      background: rgba(243,156,18,0.1);
+      border: 1px solid rgba(243,156,18,0.25);
+      border-radius: 6px;
+      padding: 0.25rem 0.7rem;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+    .nav-btn {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .nav-btn:hover { background: var(--crimson); border-color: var(--crimson); }
+    .nav-center { text-align: center; flex: 1; }
+    .nav-month {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      line-height: 1;
+    }
+    .nav-year {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: 'Crimson Pro', serif;
+      margin-top: 0.2rem;
+      display: block;
+    }
+    .nav-today-btn {
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--crimson);
+      background: transparent;
+      color: var(--crimson-lt);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-today-btn:hover { background: var(--crimson); color: #fff; }
+
+    /* ── CALENDAR GRID ── */
+    .calendar {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .cal-head {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+    }
+    .cal-head-cell {
+      text-align: center;
+      padding: 0.8rem 0.25rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .cal-head-cell.sun { color: var(--sunday); }
+    .cal-head-cell.sat { color: var(--saturday); }
+    .cal-head-cell.wkd { color: var(--text-dim); }
+
+    .cal-body {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    .cal-cell {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      min-height: 82px;
+      padding: 0.45rem 0.5rem;
+      position: relative;
+      cursor: default;
+      transition: background 0.15s;
+    }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-cell.empty { background: transparent; cursor: default; }
+    .cal-cell:not(.empty):hover { background: var(--surface); }
+
+    .cell-bs {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1;
+      display: block;
+    }
+    .cell-ad {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      font-family: 'Crimson Pro', serif;
+      margin-top: 0.2rem;
+      display: block;
+    }
+    .cell-event {
+      font-size: 0.6rem;
+      margin-top: 0.3rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+    }
+
+    /* Day color rules */
+    .cal-cell.col-0 .cell-bs { color: var(--sunday); }   /* Sunday */
+    .cal-cell.col-6 .cell-bs { color: var(--saturday); } /* Saturday */
+    .cal-cell.col-0 .cell-ad,
+    .cal-cell.col-6 .cell-ad { opacity: 0.7; }
+
+    /* Today */
+    .cal-cell.today {
+      background: rgba(192,57,43,0.12);
+      border-color: rgba(192,57,43,0.4);
+    }
+    .cal-cell.today .cell-bs-wrap {
+      background: var(--today-bg);
+      color: var(--today-txt);
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+    .cal-cell.today .cell-bs { color: #fff; font-size: 1rem; }
+
+    /* Holiday */
+    .cal-cell.holiday .cell-event {
+      color: var(--holiday);
+      background: rgba(243,156,18,0.1);
+    }
+    .cal-cell.event-only .cell-event {
+      color: #7ec8e3;
+      background: rgba(126,200,227,0.08);
+    }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+
+    /* ── MONTH SELECTOR ── */
+    .month-selector {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+    .month-selector.open { display: grid; }
+    .ms-btn {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .ms-btn:hover, .ms-btn.active { background: var(--crimson); border-color: var(--crimson); color: #fff; }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-family: 'Crimson Pro', serif;
+      font-style: italic;
+    }
+    .footer a { color: var(--crimson-lt); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 540px) {
+      .cal-cell { min-height: 60px; padding: 0.3rem 0.25rem; }
+      .cell-bs { font-size: 0.9rem; }
+      .cell-ad { display: none; }
+      .cell-event { display: none; }
+      .cal-head-cell { font-size: 0.65rem; padding: 0.6rem 0; }
+      .nav-month { font-size: 1.1rem; }
+      .month-selector { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-flag">
+      <span class="flag-dot"></span>
+      नेपाल
+      <span class="flag-dot"></span>
+    </div>
+    <h1>नेपाली पात्रो<span>Bikram Sambat Calendar</span></h1>
+  </header>
+
+  <!-- TODAY -->
+  <div class="today-banner" id="todayBanner"></div>
+
+  <!-- MONTH SELECTOR -->
+  <div class="month-selector" id="monthSelector"></div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button class="nav-btn" onclick="changeMonth(-1)" title="Previous">‹</button>
+    <div class="nav-center">
+      <span class="nav-month" id="navMonth" onclick="toggleMonthSelector()" style="cursor:pointer" title="Click to pick month"></span>
+      <span class="nav-year" id="navYear"></span>
+    </div>
+    <button class="nav-btn" onclick="changeMonth(1)" title="Next">›</button>
+    <button class="nav-today-btn" onclick="goToday()">आज</button>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="calendar">
+    <div class="cal-head">
+      <div class="cal-head-cell sun">आइत<br><small style="font-size:0.6em;font-family:sans-serif">Sun</small></div>
+      <div class="cal-head-cell wkd">सोम<br><small style="font-size:0.6em;font-family:sans-serif">Mon</small></div>
+      <div class="cal-head-cell wkd">मंगल<br><small style="font-size:0.6em;font-family:sans-serif">Tue</small></div>
+      <div class="cal-head-cell wkd">बुध<br><small style="font-size:0.6em;font-family:sans-serif">Wed</small></div>
+      <div class="cal-head-cell wkd">बिही<br><small style="font-size:0.6em;font-family:sans-serif">Thu</small></div>
+      <div class="cal-head-cell wkd">शुक्र<br><small style="font-size:0.6em;font-family:sans-serif">Fri</small></div>
+      <div class="cal-head-cell sat">शनि<br><small style="font-size:0.6em;font-family:sans-serif">Sat</small></div>
+    </div>
+    <div class="cal-body" id="calBody"></div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--today-bg)"></span>आज / Today</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--holiday)"></span>सार्वजनिक बिदा / Holiday</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#7ec8e3"></span>उत्सव / Festival</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--sunday)"></span>आइतबार / Sunday</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--saturday)"></span>शनिबार / Saturday</div>
+  </div>
+
+  <footer class="footer">
+    Bikram Sambat (BS) • 56 years 8 months ahead of Gregorian calendar<br>
+    <a href="https://github.com" target="_blank">Open Source Nepali Calendar</a>
+  </footer>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  BS MONTH DATA  (days per month per BS year)
+// ─────────────────────────────────────────────
+const BS_MONTH_DATA = {
+  2000:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2001:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2002:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2003:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2004:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2005:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2006:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2007:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2008:[31,31,31,32,31,31,29,30,30,29,29,31],
+  2009:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2010:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2011:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2012:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2013:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2014:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2015:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2016:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2017:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2018:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2019:[31,32,31,32,31,30,30,30,29,30,29,31],
+  2020:[31,31,31,32,31,31,30,29,30,29,30,30],
+  2021:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2022:[31,32,31,32,31,30,30,30,29,29,30,30],
+  2023:[31,32,31,32,31,30,30,30,29,30,29,31],
+  2024:[31,31,31,32,31,31,30,29,30,29,30,30],
+  2025:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2026:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2027:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2028:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2029:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2030:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2031:[31,31,31,32,31,31,29,30,30,29,29,31],
+  2032:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2033:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2034:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2035:[30,32,31,32,31,31,29,30,30,29,29,31],
+  2036:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2037:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2038:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2039:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2040:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2041:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2042:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2043:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2044:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2045:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2046:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2047:[31,31,31,32,31,31,30,29,30,29,30,30],
+  2048:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2049:[31,32,31,32,31,30,30,30,29,29,30,30],
+  2050:[31,32,31,32,31,30,30,30,29,30,29,31],
+  2051:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2052:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2053:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2054:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2055:[30,32,31,32,31,31,29,30,30,29,29,31],
+  2056:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2057:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2058:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2059:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2060:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2061:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2062:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2063:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2064:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2065:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2066:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2067:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2068:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2069:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2070:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2071:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2072:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2073:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2074:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2075:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2076:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2077:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2078:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2079:[31,31,31,32,31,31,29,30,30,29,30,30],
+  2080:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2081:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2082:[31,32,31,32,31,30,30,30,29,30,29,31],
+  2083:[31,31,31,32,31,31,30,29,30,29,30,30],
+  2084:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2085:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2086:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2087:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2088:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2089:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2090:[31,32,31,32,31,30,30,30,29,30,29,31],
+};
+
+// ── NAMES ──
+const BS_MONTHS_NE = ['बैशाख','जेठ','असार','श्रावण','भाद्र','आश्विन','कार्तिक','मंसिर','पौष','माघ','फाल्गुन','चैत्र'];
+const BS_MONTHS_EN = ['Baisakh','Jestha','Ashadh','Shrawan','Bhadra','Ashwin','Kartik','Mangsir','Poush','Magh','Falgun','Chaitra'];
+const DAYS_NE = ['आइत','सोम','मंगल','बुध','बिही','शुक्र','शनि'];
+
+// Nepali digits
+const toNepaliNum = n => String(n).replace(/\d/g, d => '०१२३४५६७८९'[d]);
+
+// ── AD→BS CONVERSION ──
+function adToBS(adYear, adMonth, adDay) {
+  // Reference: BS 2000/1/1 = AD 1943/4/14
+  const refBS = { y:2000, m:1, d:1 };
+  const refAD = new Date(1943, 3, 14); // Apr 14, 1943
+
+  const target = new Date(adYear, adMonth - 1, adDay);
+  let totalDays = Math.round((target - refAD) / 86400000);
+
+  let bsY = refBS.y, bsM = refBS.m, bsD = refBS.d;
+
+  if (totalDays >= 0) {
+    // Forward from reference
+    let yearData = BS_MONTH_DATA[bsY];
+    while (totalDays >= (yearData ? yearData[bsM - 1] : 30)) {
+      totalDays -= yearData ? yearData[bsM - 1] : 30;
+      bsM++;
+      if (bsM > 12) { bsM = 1; bsY++; yearData = BS_MONTH_DATA[bsY]; }
+    }
+    bsD += totalDays;
+    const maxDay = yearData ? yearData[bsM - 1] : 30;
+    if (bsD > maxDay) { bsD -= maxDay; bsM++; if (bsM > 12) { bsM = 1; bsY++; } }
+  }
+  return { year: bsY, month: bsM, day: bsD };
+}
+
+// ── BS→AD CONVERSION ──
+function bsToAD(bsYear, bsMonth, bsDay) {
+  const refAD = new Date(1943, 3, 14);
+  let totalDays = 0;
+
+  for (let y = 2000; y < bsYear; y++) {
+    const d = BS_MONTH_DATA[y];
+    if (d) d.forEach(m => totalDays += m);
+  }
+  for (let m = 1; m < bsMonth; m++) {
+    const d = BS_MONTH_DATA[bsYear];
+    if (d) totalDays += d[m - 1];
+  }
+  totalDays += bsDay - 1;
+
+  const ad = new Date(refAD);
+  ad.setDate(ad.getDate() + totalDays);
+  return ad;
+}
+
+// ── HOLIDAYS & FESTIVALS ──
+// Format: key = "MM-DD" (BS month-day)
+const HOLIDAYS = {
+  '1-1':  { name: 'नयाँ वर्ष', en: 'Nepali New Year', type: 'holiday' },
+  '1-15': { name: 'माता तीर्थ औँसी', en: 'Mother\'s Day', type: 'festival' },
+  '3-15': { name: 'साउने संक्रान्ति', en: 'Saune Sankranti', type: 'festival' },
+  '4-1':  { name: 'श्रावण संक्रान्ति', en: 'Shrawan Sankranti', type: 'festival' },
+  '5-29': { name: 'जनै पूर्णिमा', en: 'Janai Purnima', type: 'holiday' },
+  '5-30': { name: 'गाईजात्रा', en: 'Gai Jatra', type: 'festival' },
+  '6-1':  { name: 'तीज', en: 'Teej', type: 'holiday' },
+  '7-1':  { name: 'घटस्थापना', en: 'Ghatasthapana', type: 'holiday' },
+  '7-7':  { name: 'फूलपाती', en: 'Fulpati', type: 'holiday' },
+  '7-8':  { name: 'महाअष्टमी', en: 'Maha Ashtami', type: 'holiday' },
+  '7-9':  { name: 'महानवमी', en: 'Maha Navami', type: 'holiday' },
+  '7-10': { name: 'विजया दशमी', en: 'Dashain', type: 'holiday' },
+  '7-15': { name: 'कोजाग्रत पूर्णिमा', en: 'Kojagrat Purnima', type: 'festival' },
+  '7-16': { name: 'लक्ष्मी पूजा', en: 'Laxmi Puja', type: 'holiday' },
+  '7-18': { name: 'तिहार', en: 'Tihar', type: 'holiday' },
+  '7-19': { name: 'भाइटीका', en: 'Bhai Tika', type: 'holiday' },
+  '8-29': { name: 'उधौली', en: 'Udhauli', type: 'festival' },
+  '9-1':  { name: 'पौष संक्रान्ति', en: 'Poush Sankranti', type: 'festival' },
+  '10-1': { name: 'माघ संक्रान्ति', en: 'Maghe Sankranti', type: 'holiday' },
+  '10-15':{ name: 'माघ शुक्ल पूर्णिमा', en: 'Magh Purnima', type: 'festival' },
+  '11-7': { name: 'महाशिवरात्री', en: 'Maha Shivaratri', type: 'holiday' },
+  '12-15':{ name: 'होली', en: 'Holi', type: 'holiday' },
+  '12-30':{ name: 'चैते दशैं', en: 'Chaite Dashain', type: 'festival' },
+};
+
+function getEvent(bsMonth, bsDay) {
+  return HOLIDAYS[`${bsMonth}-${bsDay}`] || null;
+}
+
+// ── STATE ──
+const today = new Date();
+const todayBS = adToBS(today.getFullYear(), today.getMonth() + 1, today.getDate());
+let viewYear = todayBS.year;
+let viewMonth = todayBS.month;
+
+// ── RENDER TODAY BANNER ──
+function renderTodayBanner() {
+  const dow = today.getDay();
+  const event = getEvent(todayBS.month, todayBS.day);
+  const adStr = today.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('todayBanner').innerHTML = `
+    <div>
+      <div class="today-bs">${toNepaliNum(todayBS.day)} ${BS_MONTHS_NE[todayBS.month-1]} ${toNepaliNum(todayBS.year)}</div>
+      <div class="today-ad">${adStr}</div>
+    </div>
+    <div style="text-align:right">
+      <div class="today-day">${DAYS_NE[dow]}</div>
+      ${event ? `<div class="today-holiday">${event.name}</div>` : ''}
+    </div>
+  `;
+}
+
+// ── RENDER MONTH SELECTOR ──
+function renderMonthSelector() {
+  const el = document.getElementById('monthSelector');
+  el.innerHTML = BS_MONTHS_NE.map((n, i) =>
+    `<button class="ms-btn${i+1===viewMonth?' active':''}" onclick="selectMonth(${i+1})">${n}</button>`
+  ).join('');
+}
+
+function toggleMonthSelector() {
+  const el = document.getElementById('monthSelector');
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) renderMonthSelector();
+}
+
+function selectMonth(m) {
+  viewMonth = m;
+  document.getElementById('monthSelector').classList.remove('open');
+  render();
+}
+
+// ── RENDER CALENDAR ──
+function render() {
+  const monthData = BS_MONTH_DATA[viewYear];
+  if (!monthData) return;
+  const daysInMonth = monthData[viewMonth - 1];
+
+  // Find AD date of BS year/month/1
+  const firstAD = bsToAD(viewYear, viewMonth, 1);
+  const startDow = firstAD.getDay(); // 0=Sun … 6=Sat
+
+  document.getElementById('navMonth').textContent = `${BS_MONTHS_NE[viewMonth-1]}`;
+  document.getElementById('navYear').textContent =
+    `${BS_MONTHS_EN[viewMonth-1]} ${viewYear} BS • ${firstAD.getFullYear()}/${firstAD.getFullYear()+1} AD`;
+
+  const body = document.getElementById('calBody');
+  body.innerHTML = '';
+
+  // Empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell empty';
+    body.appendChild(cell);
+  }
+
+  // Day cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    const col = (startDow + d - 1) % 7;
+    const adDate = bsToAD(viewYear, viewMonth, d);
+    const adDay = adDate.getDate();
+    const adMon = adDate.toLocaleDateString('en-US', { month:'short' });
+    const event = getEvent(viewMonth, d);
+
+    const isToday = (viewYear === todayBS.year && viewMonth === todayBS.month && d === todayBS.day);
+
+    const cell = document.createElement('div');
+    cell.className = `cal-cell col-${col}${isToday ? ' today' : ''}${event ? (event.type==='holiday' ? ' holiday' : ' event-only') : ''}`;
+
+    const bsWrap = isToday
+      ? `<div class="cell-bs-wrap"><span class="cell-bs">${toNepaliNum(d)}</span></div>`
+      : `<span class="cell-bs">${toNepaliNum(d)}</span>`;
+
+    cell.innerHTML = `
+      ${bsWrap}
+      <span class="cell-ad">${adDay} ${adMon}</span>
+      ${event ? `<span class="cell-event">${event.name}</span>` : ''}
+    `;
+    body.appendChild(cell);
+  }
+}
+
+// ── NAVIGATION ──
+function changeMonth(dir) {
+  viewMonth += dir;
+  if (viewMonth > 12) { viewMonth = 1; viewYear++; }
+  if (viewMonth < 1)  { viewMonth = 12; viewYear--; }
+  render();
+}
+
+function goToday() {
+  viewYear = todayBS.year;
+  viewMonth = todayBS.month;
+  render();
+}
+
+// ── KEYBOARD NAV ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft')  changeMonth(-1);
+  if (e.key === 'ArrowRight') changeMonth(1);
+  if (e.key === 'Home')       goToday();
+});
+
+// ── INIT ──
+renderTodayBanner();
+render();
+</script>
+</body>
+</html>

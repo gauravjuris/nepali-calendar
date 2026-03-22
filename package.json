@@ -1,0 +1,11 @@
+{
+  "name": "nepali-calendar",
+  "version": "1.0.0",
+  "description": "Standalone Nepali (Bikram Sambat) calendar widget with daily GitHub Actions auto-commit",
+  "main": "index.html",
+  "scripts": {
+    "update": "node scripts/update-today.js"
+  },
+  "keywords": ["nepali", "calendar", "bikram-sambat", "nepal", "patro"],
+  "license": "MIT"
+}
