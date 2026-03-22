@@ -2,7 +2,7 @@
 
 A beautiful, standalone Nepali (Bikram Sambat) calendar widget you can drop into any website — zero dependencies, zero build step.
 
-[![Daily Date Update](https://github.com/YOUR_USERNAME/nepali-calendar/actions/workflows/daily-update.yml/badge.svg)](https://github.com/YOUR_USERNAME/nepali-calendar/actions/workflows/daily-update.yml)
+[![Daily Date Update](https://github.com/gauravjuris/nepali-calendar/actions/workflows/daily-update.yml/badge.svg)](https://github.com/gauravjuris/nepali-calendar/actions/workflows/daily-update.yml)
 
 ---
 
@@ -41,7 +41,7 @@ Copy `index.html` into your project and open it in a browser. Done.
 
 1. Push this repo to GitHub
 2. Go to **Settings → Pages → Source → `main` branch → `/` (root)**
-3. Your calendar is live at `https://YOUR_USERNAME.github.io/nepali-calendar/`
+3. Your calendar is live at `https://gauravjuris.github.io/nepali-calendar/`
 
 ---
 
